@@ -12,7 +12,7 @@ while(true)
     
     while(oin.recv(msg))
     {
-        <<< "got message:", msg.address, msg.typetag >>>;
+        <<< "got message:", msg.address, msg.typetag, "[", msg.getFloat(0), ",", msg.getFloat(1), ",", msg.getFloat(2), "]" >>>;
     }
 }
 

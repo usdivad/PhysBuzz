@@ -376,7 +376,7 @@ TextMesh:
   m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   m_Color:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190191
 --- !u!23 &437297912
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -407,8 +407,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 437297910}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .641126156, y: 1, z: -.277207434}
+  m_LocalRotation: {x: 0, y: .707106829, z: 0, w: .707106709}
+  m_LocalPosition: {x: 20.75, y: 6.01999998, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1134,7 +1134,7 @@ BoxCollider:
   m_GameObject: {fileID: 1662437665}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1157,6 +1157,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1727537265}
+  - 114: {fileID: 1727537266}
   m_Layer: 0
   m_Name: weapon
   m_TagString: Untagged
@@ -1179,6 +1180,18 @@ Transform:
   - {fileID: 1764067461}
   m_Father: {fileID: 1708193375}
   m_RootOrder: 0
+--- !u!114 &1727537266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1727537264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4a034b4ee6e043179ca52eecf9c312a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rocketPrefab: {fileID: 187918, guid: 55eaf15344ad647a2bcba6a990336adf, type: 2}
 --- !u!1 &1747963547
 GameObject:
   m_ObjectHideFlags: 0
@@ -1263,7 +1276,7 @@ BoxCollider:
   m_GameObject: {fileID: 1764067457}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1773,7 +1786,7 @@ BoxCollider:
   m_GameObject: {fileID: 2131890373}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}

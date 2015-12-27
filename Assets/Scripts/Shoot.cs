@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+//using System.Net;
 
 public class Shoot : MonoBehaviour {
 	// rocket prefab
@@ -21,6 +22,12 @@ public class Shoot : MonoBehaviour {
 			// (requires rocket to have rigidbody attached to it)
 			float force = g.GetComponent<Rocket>().speed;
 			g.GetComponent<Rigidbody>().AddForce(g.transform.forward * force);
+
+			ArrayList values = new ArrayList();
+			values.Add (transform.position);
+			values.Add (force);
+
+			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz", force);
 		}
 	}
 }

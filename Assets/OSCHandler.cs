@@ -94,6 +94,7 @@ public class OSCHandler : MonoBehaviour
         //Initialize OSC clients (transmitters)
         //Example:		
         //CreateClient("SuperCollider", IPAddress.Parse("127.0.0.1"), 5555);
+        CreateClient("ChucK", IPAddress.Parse("127.0.0.1"), 6449);
 
         //Initialize OSC servers (listeners)
         //Example:

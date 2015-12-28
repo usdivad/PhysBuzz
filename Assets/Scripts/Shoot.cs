@@ -9,9 +9,12 @@ namespace PhysBuzz
 		// rocket prefab
 		public GameObject rocketPrefab;
 
+		// stats (counter)
+		public Stats gameStats;
+
 		// Use this for initialization
 		void Start () {
-		
+			gameStats = new Stats();
 		}
 		
 		// Update is called once per frame
@@ -26,12 +29,17 @@ namespace PhysBuzz
 				float force = g.GetComponent<Rocket>().speed;
 				g.GetComponent<Rigidbody>().AddForce(g.transform.forward * force);
 
+				// update stats
+				gameStats.AddShot();
+				print (gameStats.GetTotalShots());
+
+
+				// OSC
 				List<object> values = new List<object>();
 				values.AddRange (new object[] {transform.position.x, transform.position.y, transform.position.z});
 //				values.Add (transform.parent.rotation);
 //				values.Add (force);
 
-				
 				// OSCHandler.Instance.UpdateLogs();
 				 OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz", values);
 //				OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz", transform.position.x);

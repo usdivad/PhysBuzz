@@ -8,7 +8,7 @@ OscMsg msg;   // message holder
 
 while(true)
 {
-    oin => now;   // wait for any OSC
+    //oin => now;   // wait for any OSC
     
     while(oin.recv(msg))
     {

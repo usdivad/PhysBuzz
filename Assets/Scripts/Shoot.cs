@@ -41,7 +41,7 @@ namespace PhysBuzz
 //				values.Add (force);
 
 				// OSCHandler.Instance.UpdateLogs();
-				 OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz", values);
+				 OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/Shoot", values);
 //				OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz", transform.position.x);
 			}
 		}

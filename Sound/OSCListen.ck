@@ -24,7 +24,7 @@ while (true) {
 }
 
 fun void handleShoot(OscMsg msg) {
-    <<< "shoot", "[", msg.getFloat(0), ",", msg.getFloat(1), ",", msg.getFloat(2), "]" >>>;
+    <<< "shoot", "[", msg.getString(0), ",", msg.getFloat(1), "]" >>>;
 }
 
 fun void handleFootStep(OscMsg msg) {

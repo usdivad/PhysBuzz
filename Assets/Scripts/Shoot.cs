@@ -23,10 +23,10 @@ namespace PhysBuzz
 			if (Input.GetMouseButtonDown (0)) {
 				// update stats
 				gameStats.AddShot();
-				print (gameStats.GetCurrentShot());
+				string curShot = gameStats.GetCurrentShot();
+				print (curShot);
 
-				GameObject rocketPrefab = SetPrefab (gameStats.GetCurrentShot());
-
+				GameObject rocketPrefab = SetPrefab (curShot);
 				GameObject g = (GameObject)Instantiate(rocketPrefab,
 				                                       transform.position, // exactly where the weapon is
 				                                       transform.parent.rotation); // face same direction player (weapon's parent) faces
@@ -34,18 +34,23 @@ namespace PhysBuzz
 				// make rocket fly fwd by calling rigidbody's AddForce method
 				// (requires rocket to have rigidbody attached to it)
 				//float force = g.GetComponent<Rocket>().speed;
-				float force = SetForce (gameStats.GetCurrentShot());
+				float force = SetForce (curShot);
 				print("force: "+ force);
 				g.GetComponent<Rigidbody>().AddForce(g.transform.forward * force);
 
 
-
+				GameObject counter = GameObject.Find ("counter");
+				TextMesh counterText = counter.GetComponent<TextMesh>();
+				counterText.text = curShot.ToString();
 
 				// OSC
 				List<object> values = new List<object>();
-				values.AddRange (new object[] {transform.position.x, transform.position.y, transform.position.z});
-//				values.Add (transform.parent.rotation);
-//				values.Add (force);
+				values.AddRange (new object[] {curShot, force});
+
+				// values.AddRange (new object[] {transform.position.x, transform.position.y, transform.position.z});
+
+				// values.Add (transform.parent.rotation);
+				//values.Add (force);
 
 				// OSCHandler.Instance.UpdateLogs();
 				 OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/Shoot", values);

@@ -31,6 +31,11 @@ namespace PhysBuzz
 			transform.rotation = Quaternion.LookRotation (rotDir);
 			// Debug.DrawRay (transform.position, rotDir, Color.red);
 			//print (rotDir);
+
+			// distance
+			float distance = Vector3.Distance (playerPos, transform.position);
+			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/Eyeball", distance);
+
 		}
 	}
 }

@@ -20,17 +20,24 @@ while (true) {
         else if (msg.address == "/PhysBuzz/Explode") {
             handleExplode(msg);
         }
+        else if (msg.address == "/PhysBuzz/Eyeball") {
+            handleEyeball(msg);
+        }
     }
 }
 
 fun void handleShoot(OscMsg msg) {
-    <<< "shoot", "[", msg.getString(0), ",", msg.getFloat(1), "]" >>>;
+    <<< "SHOOT:", "shot #", msg.getString(0), ", force:", msg.getFloat(1), "]" >>>;
 }
 
 fun void handleFootStep(OscMsg msg) {
-    <<< "footstep", msg.getInt(0) >>>;
+    <<< "FOOTSTEP:", "footstep #", msg.getInt(0) >>>;
 }
 
 fun void handleExplode(OscMsg msg) {
-    <<< "explode", msg.getFloat(0) >>>;
+    <<< "EXPLODE:", "distance:", msg.getFloat(0) >>>;
+}
+
+fun void handleEyeball(OscMsg msg) {
+    <<< "EYEBALL:", "distance:", msg.getFloat(0) >>>;
 }

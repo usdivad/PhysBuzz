@@ -7,7 +7,8 @@ namespace PhysBuzz
 {
 	public class Shoot : MonoBehaviour {
 		// rocket prefab
-		public GameObject rocketPrefab;
+		public GameObject defaultRocketPrefab;
+		public GameObject fizzBuzzRocketPrefab;
 
 		// stats (counter)
 		public Stats gameStats;
@@ -20,6 +21,12 @@ namespace PhysBuzz
 		// Update is called once per frame
 		void Update () {
 			if (Input.GetMouseButtonDown (0)) {
+				// update stats
+				gameStats.AddShot();
+				print (gameStats.GetCurrentShot());
+
+				GameObject rocketPrefab = SetPrefab (gameStats.GetCurrentShot());
+
 				GameObject g = (GameObject)Instantiate(rocketPrefab,
 				                                       transform.position, // exactly where the weapon is
 				                                       transform.parent.rotation); // face same direction player (weapon's parent) faces
@@ -27,13 +34,11 @@ namespace PhysBuzz
 				// make rocket fly fwd by calling rigidbody's AddForce method
 				// (requires rocket to have rigidbody attached to it)
 				//float force = g.GetComponent<Rocket>().speed;
-				float force = Random.Range (100.0f, 500.0f);
+				float force = SetForce (gameStats.GetCurrentShot());
 				print("force: "+ force);
 				g.GetComponent<Rigidbody>().AddForce(g.transform.forward * force);
 
-				// update stats
-				gameStats.AddShot();
-				print (gameStats.GetTotalShots());
+
 
 
 				// OSC
@@ -45,6 +50,22 @@ namespace PhysBuzz
 				// OSCHandler.Instance.UpdateLogs();
 				 OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/Shoot", values);
 //				OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz", transform.position.x);
+			}
+		}
+
+		float SetForce(string shot) {
+			if (shot == "Fizz" || shot == "Buzz" || shot == "FizzBuzz") {
+				return Random.Range (100.0f, 200.0f);
+			} else {
+				return Random.Range (2000.0f, 3000.0f);
+			}
+		}
+
+		GameObject SetPrefab(string shot) {
+			if (shot == "Fizz" || shot == "Buzz" || shot == "FizzBuzz") {
+				return fizzBuzzRocketPrefab;
+			} else {
+				return defaultRocketPrefab;
 			}
 		}
 	}

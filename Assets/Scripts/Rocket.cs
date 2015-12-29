@@ -16,7 +16,7 @@ namespace PhysBuzz
 
 		// Use this for initialization
 		void Start () {
-			speed = Random.Range (100.0f, 2000.0f);
+			// speed = Random.Range (100.0f, 2000.0f);
 			//print(speed);
 			player = GameObject.Find ("Player");
 		}
@@ -38,8 +38,7 @@ namespace PhysBuzz
 			Destroy (gameObject);
 
 			// osc
-			Vector3 distance = transform.position - player.transform.position;
-			print ("rocket distance:" + distance);
+			float distance = Vector3.Distance(transform.position, player.transform.position);
 			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/Explode", distance);
 		}
 	}

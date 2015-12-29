@@ -43,6 +43,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private bool m_Jumping;
         private AudioSource m_AudioSource;
 
+		private int maxFootStepDelay = 25;
+		private int currentFootStepDelay;
+
         // Use this for initialization
         private void Start()
         {
@@ -56,6 +59,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
+
+			currentFootStepDelay = 0;
         }
 
 
@@ -167,7 +172,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             // pick & play a random footstep sound from the array,
             // excluding sound at index 
-			/*
+            /*
             int n = Random.Range(1, m_FootstepSounds.Length);
             m_AudioSource.clip = m_FootstepSounds[n];
             m_AudioSource.PlayOneShot(m_AudioSource.clip);
@@ -176,9 +181,17 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_FootstepSounds[0] = m_AudioSource.clip;
 			*/
 
-			// play random footstep sound using osc
-			int n = Random.Range (0, 3);
-			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/FootStep", n);
+			// footstep delay handler!
+			print (currentFootStepDelay);
+			if (currentFootStepDelay <= 0) {
+				// play random footstep sound using osc
+				int n = Random.Range (0, 3);
+				OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/FootStep", n);
+				currentFootStepDelay = maxFootStepDelay;
+			}
+			else {
+				currentFootStepDelay = currentFootStepDelay - 1;
+			}
         }
 
 

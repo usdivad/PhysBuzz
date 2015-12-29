@@ -11,7 +11,7 @@ Sonifier sonifier;
 
 while (true) {
     while (oin.recv(msg)) {
-        <<< "got message:", msg.address, msg.typetag>>>;
+        // <<< "got message:", msg.address, msg.typetag>>>;
 
         if (msg.address == "/PhysBuzz/Shoot") {
             sonifier.sonifyShoot(msg);

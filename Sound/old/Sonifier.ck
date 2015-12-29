@@ -1,3 +1,6 @@
+/*
+ * Sonifier class
+ */
 public class Sonifier {
 
     // footstep foley
@@ -71,9 +74,10 @@ public class Sonifier {
 
 
     fun void setFreqs(float freq)  {
-    for (int i;i<NUM_MODES;i++)   {
-        freq * Math.sqrt(modes[i][0]*modes[i][0] +
-                            modes[i][1]*modes[i][1]) => mode[i].freq;
+        for (int i;i<NUM_MODES;i++)   {
+            freq * Math.sqrt(modes[i][0]*modes[i][0] +
+                                modes[i][1]*modes[i][1]) => mode[i].freq;
+        }
     }
-}
+
 }

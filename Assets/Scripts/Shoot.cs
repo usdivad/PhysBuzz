@@ -26,7 +26,9 @@ namespace PhysBuzz
 
 				// make rocket fly fwd by calling rigidbody's AddForce method
 				// (requires rocket to have rigidbody attached to it)
-				float force = g.GetComponent<Rocket>().speed;
+				//float force = g.GetComponent<Rocket>().speed;
+				float force = Random.Range (100.0f, 500.0f);
+				print("force: "+ force);
 				g.GetComponent<Rigidbody>().AddForce(g.transform.forward * force);
 
 				// update stats

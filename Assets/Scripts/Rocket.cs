@@ -6,13 +6,14 @@ namespace PhysBuzz
 	public class Rocket : MonoBehaviour {
 		// fly speed (used by the weapon later)
 		public float speed = 2000.0f;
+		public float testVar = 1.0f;
 
 		// explosiont prefab (particles)
 		public GameObject explosionPrefab;
 
 		// Use this for initialization
 		void Start () {
-		
+			// speed = Random.Range (100.0f, 2000.0f);
 		}
 		
 		// Update is called once per frame

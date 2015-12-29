@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
@@ -95,9 +96,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_AudioSource.clip = m_LandSound;
             m_AudioSource.Play();
             m_NextStep = m_StepCycle + .5f;
-        }
 
-
+			List<object> values = new List<object>();
+			values.AddRange (new object[] {transform.position.x, transform.position.y, transform.position.z});
+			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/FootStep", values);
+		}
+		
+		
         private void FixedUpdate()
         {
             float speed;
@@ -142,9 +147,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             m_AudioSource.clip = m_JumpSound;
             m_AudioSource.Play();
-        }
 
-
+			/*
+			List<object> values = new List<object>();
+			values.AddRange (new object[] {transform.position.x, transform.position.y, transform.position.z});
+			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/FootStep", values);
+			*/
+		}
+		
+		
         private void ProgressStepCycle(float speed)
         {
             if (m_CharacterController.velocity.sqrMagnitude > 0 && (m_Input.x != 0 || m_Input.y != 0))
@@ -186,7 +197,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			if (currentFootStepDelay <= 0) {
 				// play random footstep sound using osc
 				int n = Random.Range (0, 3);
-				OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/FootStep", n);
+				List<object> values = new List<object>();
+				values.AddRange (new object[] {transform.position.x, transform.position.y, transform.position.z});
+				OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/FootStep", values);
 				currentFootStepDelay = maxFootStepDelay;
 			}
 			else {

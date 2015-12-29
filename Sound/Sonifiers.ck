@@ -50,7 +50,7 @@ public class Sonifier {
             setFreqs(Math.random2f(220.0,880.0));
             0.5 => imp.next;
 
-            Math.random2f(0.45, 0.55)::second => now;
+            0.25::second => now;
         }
         else { // gravel
             Math.random2f(200, 400) => shaker.freq;

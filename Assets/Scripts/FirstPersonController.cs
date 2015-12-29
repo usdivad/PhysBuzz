@@ -193,6 +193,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			*/
 
 			// footstep delay handler!
+			int footStepDelay = maxFootStepDelay;
+			if (transform.position.y > 1.0f) {
+				footStepDelay = (int)(maxFootStepDelay * 0.75);
+			}
 			print (currentFootStepDelay);
 			if (currentFootStepDelay <= 0) {
 				// play random footstep sound using osc
@@ -200,7 +204,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 				List<object> values = new List<object>();
 				values.AddRange (new object[] {transform.position.x, transform.position.y, transform.position.z});
 				OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/FootStep", values);
-				currentFootStepDelay = maxFootStepDelay;
+				currentFootStepDelay = footStepDelay;
 			}
 			else {
 				currentFootStepDelay = currentFootStepDelay - 1;

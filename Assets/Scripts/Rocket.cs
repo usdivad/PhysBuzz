@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace PhysBuzz
 {
@@ -14,11 +15,14 @@ namespace PhysBuzz
 		// player
 		public GameObject player;
 
+		public Stats gameStats;
+
 		// Use this for initialization
 		void Start () {
 			// speed = Random.Range (100.0f, 2000.0f);
 			//print(speed);
 			player = GameObject.Find ("Player");
+			gameStats = GameObject.Find ("stats").GetComponent<Stats> ();
 		}
 		
 		// Update is called once per frame
@@ -39,7 +43,19 @@ namespace PhysBuzz
 
 			// osc
 			float distance = Vector3.Distance(transform.position, player.transform.position);
-			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/Explode", distance);
+			string explosionType = SetExplosionType (gameStats.GetCurrentShot ());
+			List<object> values = new List<object> ();
+
+			values.AddRange (new object[] {distance, explosionType});
+			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/Explode", values);
+		}
+
+		string SetExplosionType(string shot) {
+			if (shot == "Fizz" || shot == "Buzz" || shot == "FizzBuzz") {
+				return "explosion";
+			} else {
+				return "flare";
+			}
 		}
 	}
 }

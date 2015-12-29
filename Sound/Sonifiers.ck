@@ -62,7 +62,7 @@ public class Sonifier {
     }
 
     fun void sonifyExplode(OscMsg msg) {
-        <<< "EXPLODE:", "distance:", msg.getFloat(0) >>>;
+        <<< "EXPLODE:", "distance:", msg.getFloat(0), ", explosionType:", msg.getString(1) >>>;
     }
 
     fun void sonifyEyeball(OscMsg msg) {

@@ -15,7 +15,8 @@ namespace PhysBuzz
 
 		// Use this for initialization
 		void Start () {
-			gameStats = new Stats();
+			//gameStats = new Stats();
+			gameStats = GameObject.Find ("stats").GetComponent<Stats> ();
 		}
 		
 		// Update is called once per frame

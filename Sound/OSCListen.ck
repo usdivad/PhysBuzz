@@ -7,37 +7,23 @@ OscIn oin;
 oin.listenAll();
 OscMsg msg;
 
+Sonifier sonifier;
+
 while (true) {
     while (oin.recv(msg)) {
         <<< "got message:", msg.address, msg.typetag>>>;
 
         if (msg.address == "/PhysBuzz/Shoot") {
-            handleShoot(msg);
+            sonifier.sonifyShoot(msg);
         }
         else if (msg.address == "/PhysBuzz/FootStep") {
-            handleFootStep(msg);
+            sonifier.sonifyFootStep(msg);
         }
         else if (msg.address == "/PhysBuzz/Explode") {
-            handleExplode(msg);
+            sonifier.sonifyExplode(msg);
         }
         else if (msg.address == "/PhysBuzz/Eyeball") {
-            handleEyeball(msg);
+            sonifier.sonifyEyeball(msg);
         }
     }
-}
-
-fun void handleShoot(OscMsg msg) {
-    <<< "SHOOT:", "shot #", msg.getString(0), ", force:", msg.getFloat(1), "]" >>>;
-}
-
-fun void handleFootStep(OscMsg msg) {
-    <<< "FOOTSTEP:", "footstep #", msg.getInt(0) >>>;
-}
-
-fun void handleExplode(OscMsg msg) {
-    <<< "EXPLODE:", "distance:", msg.getFloat(0) >>>;
-}
-
-fun void handleEyeball(OscMsg msg) {
-    <<< "EYEBALL:", "distance:", msg.getFloat(0) >>>;
 }

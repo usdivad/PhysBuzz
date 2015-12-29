@@ -2,27 +2,35 @@
  * OSC receivers for PhysBuzz!
  */
 
-
-// shoot
-OscIn oin_shoot;
-6449 => oin_shoot.port;
-oin_shoot.addAddress("/PhysBuzz/Shoot");
-OscMsg msg_shoot;
-
-// footstep
-OscIn oin_footstep;
-6449 => oin_footstep.port;
-oin_footstep.addAddress("/PhysBuzz/FootStep");
-OscMsg msg_footstep;
+OscIn oin;
+6449 => oin.port;
+oin.listenAll();
+OscMsg msg;
 
 while (true) {
-    while (oin_shoot.recv(msg_shoot)) {
-        msg_shoot @=> OscMsg msg;
-        <<< "got message:", msg.address, msg.typetag, "[", msg.getFloat(0), ",", msg.getFloat(1), ",", msg.getFloat(2), "]" >>>;
-    }
+    while (oin.recv(msg)) {
+        <<< "got message:", msg.address, msg.typetag>>>;
 
-    while (oin_footstep.recv(msg_footstep)) {
-        msg_footstep @=> OscMsg msg;
-        <<< "got message:", msg.address, msg.typetag, msg.getInt(0) >>>;
+        if (msg.address == "/PhysBuzz/Shoot") {
+            handleShoot(msg);
+        }
+        else if (msg.address == "/PhysBuzz/FootStep") {
+            handleFootStep(msg);
+        }
+        else if (msg.address == "/PhysBuzz/Explode") {
+            handleExplode(msg);
+        }
     }
+}
+
+fun void handleShoot(OscMsg msg) {
+    <<< "shoot", "[", msg.getFloat(0), ",", msg.getFloat(1), ",", msg.getFloat(2), "]" >>>;
+}
+
+fun void handleFootStep(OscMsg msg) {
+    <<< "footstep", msg.getInt(0) >>>;
+}
+
+fun void handleExplode(OscMsg msg) {
+    <<< "explode", msg.getFloat(0) >>>;
 }

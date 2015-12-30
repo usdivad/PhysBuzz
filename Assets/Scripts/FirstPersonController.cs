@@ -266,6 +266,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 StopAllCoroutines();
                 StartCoroutine(!m_IsWalking ? m_FovKick.FOVKickUp() : m_FovKick.FOVKickDown());
             }
+
+			// osc: we were walking and now we've stopped
+			if (!m_IsWalking && waswalking) {
+				List<object> values = new List<object>();
+				values.AddRange (new object[] {transform.position.x, transform.position.y, transform.position.z});
+				OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/FootStep", values);
+			}
         }
 
 

@@ -37,6 +37,9 @@
 
     // 4. PulseOsc for small shot
     PulseOsc pulse => PRCRev prc => dac;
+    1.0 => pulse.phase;
+    0 => pulse.sync;
+    0.5 => pulse.width;
     0 => pulse.gain;
     0.1 => prc.mix;
 
@@ -52,6 +55,20 @@
     // 10.0 => float botl_maxStep; 
 
     // 0.5 => botl.noteOn;
+
+    // 7. Shakers for explosion
+    Shakers es1 => jc => dac; // explosion shaker 1
+    Shakers es2 => prc => dac; // explosion shaker 2
+
+    12 => es1.preset; // coke can
+    128 => es1.objects;
+    1.0 => es1.energy;
+    0.75 => es1.decay;
+
+    11 => es2.preset; // sandpaper
+    128 => es2.objects;
+    1.0 => es2.energy;
+    0.75 => es2.decay;
 
     fun void sonifyShoot(OscMsg msg) {
         <<< "SHOOT:", "shot ", msg.getString(0), ", force:", msg.getFloat(1), "]" >>>;
@@ -96,6 +113,15 @@
 
     fun void sonifyExplode(OscMsg msg) {
         <<< "EXPLODE:", "distance:", msg.getFloat(0), ", explosionType:", msg.getString(1) >>>;
+        msg.getFloat(0) => float distance;
+        msg.getString(1) => string explosionType;
+
+        if (explosionType == "flare") {
+            spork ~ explodeFlare(distance);
+        }
+        else {
+            spork ~ explodeExplosion(distance);
+        }
     }
 
     fun void sonifyEyeball(OscMsg msg) {
@@ -112,6 +138,7 @@
 
     fun void smallShot(int shotNum, float force) {
         ((shotNum % 5) + 1) * 200 => pulse.freq;
+        ((shotNum % 5) + 1) * 217 => pulse.sfreq;
         // ((shotNum % 5) + 1) * 600 => pulse.vibratoFreq;
         // 0.5 => pulse.volume;
         // 0.75 => pulse.vibratoGain;
@@ -135,6 +162,18 @@
         1.0 => brass.stopBlowing;
     }
 
+    fun void explodeFlare(float distance) {
+        setVolumeFromDistance(distance) => float gain;
+        Math.max(0.1, gain) => es1.noteOn;
+        Math.random2f(100.0, 500.0) => es1.freq;
+
+        Math.max(0.1, gain) => es2.noteOn;
+        Math.random2f(100.0, 500.0) => es2.freq;
+    }
+
+    fun void explodeExplosion(float distance) {
+    }
+
     // UTILITIES
 
     fun void setFreqs(float freq)  {
@@ -151,6 +190,10 @@
         else {
             return 0;
         }
+    }
+
+    fun float setVolumeFromDistance(float distance) {
+        return ((1 - (distance / 25)) * 1.5);
     }
 
 // }

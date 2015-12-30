@@ -11,7 +11,7 @@
     9 => shaker.preset; // crunch
     
     // 2. ModalBar for marble footstep
-    ModalBar bar => NRev r => dac;
+    ModalBar bar => NRev r => Chorus chorus => dac;
     1 => bar.preset;
 
     // 3. Square Plate for marble footstep
@@ -35,10 +35,17 @@
        100.0 / (i+1) => mode[i].gain;
     }
 
-    // 4. BlowBotl
-    PulseOsc bottle => JCRev jc => dac;
-    0 => bottle.gain;
-    Brass largeBottle => jc => dac;
+    // 4. PulseOsc for small shot
+    PulseOsc pulse => PRCRev prc => dac;
+    0 => pulse.gain;
+    0.1 => prc.mix;
+
+    // 5. Brass for big shot
+    Brass brass => JCRev jc => dac;
+
+
+    // 6. BlowBotl for eyeball
+    BlowBotl eyebottle => r => dac;
 
 
     fun void sonifyShoot(OscMsg msg) {
@@ -47,10 +54,10 @@
         msg.getFloat(1) => float force;
 
         if (isFizzBuzz(shotName)) {
-            spork ~ blowBottleLarge(shotName, force);
+            spork ~ largeShot(shotName, force);
         }
         else {
-            spork ~ blowBottleSmall(Std.atoi(shotName), force);
+            spork ~ smallShot(Std.atoi(shotName), force);
         }
     }
 
@@ -91,29 +98,29 @@
     }
 
 
-    fun void blowBottleSmall(int shotNum, float force) {
-        ((shotNum % 5) + 1) * 200 => bottle.freq;
-        // ((shotNum % 5) + 1) * 600 => bottle.vibratoFreq;
-        // 0.5 => bottle.volume;
-        // 0.75 => bottle.vibratoGain;
-        // 0.5 => bottle.noiseGain;
-        0.05 => bottle.gain;
+    fun void smallShot(int shotNum, float force) {
+        ((shotNum % 5) + 1) * 200 => pulse.freq;
+        // ((shotNum % 5) + 1) * 600 => pulse.vibratoFreq;
+        // 0.5 => pulse.volume;
+        // 0.75 => pulse.vibratoGain;
+        // 0.5 => pulse.noiseGain;
+        0.035 => pulse.gain;
         0.05::second => now;
-        0.0 => bottle.gain;
+        0.0 => pulse.gain;
     }
 
-    fun void blowBottleLarge(string shot, float force) {
+    fun void largeShot(string shot, float force) {
         // <<<force*4>>>;
-        // force * 4 => largeBottle.freq;
+        // force * 4 => brass.freq;
 
-        Math.random2f(400.0, 500.0) => largeBottle.freq;
-        <<<largeBottle.freq()>>>;
-        100 => largeBottle.vibratoFreq;
-        0.75 => largeBottle.vibratoGain;
-        0.9 => largeBottle.lip;
-        0.75 => largeBottle.startBlowing;
+        Math.random2f(400.0, 500.0) => brass.freq;
+        <<<brass.freq()>>>;
+        100 => brass.vibratoFreq;
+        0.75 => brass.vibratoGain;
+        0.9 => brass.lip; // higher values make it go cray!
+        0.75 => brass.startBlowing;
         1.0::second => now;
-        1.0 => largeBottle.stopBlowing;
+        1.0 => brass.stopBlowing;
     }
 
     // UTILITIES

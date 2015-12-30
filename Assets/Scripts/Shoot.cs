@@ -42,7 +42,7 @@ namespace PhysBuzz
 
 				GameObject counter = GameObject.Find ("counter");
 				TextMesh counterText = counter.GetComponent<TextMesh>();
-				counterText.text = curShot.ToString();
+				counterText.text = gameStats.GetTotalShots().ToString();
 
 				// OSC
 				List<object> values = new List<object>();

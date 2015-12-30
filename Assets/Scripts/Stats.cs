@@ -16,10 +16,12 @@ namespace PhysBuzz
 		
 		}
 
+		// get the total number of shots fired so far
 		public int GetTotalShots() {
 			return totalShots;
 		}
 
+		// get the "FizzBuzz"'ed value of the current shot
 		public string GetCurrentShot() {
 			return FizzBuzz (totalShots);
 		}

@@ -4,14 +4,17 @@
  */
 // public class Sonifier {
 
-    // footstep foley
+    // SOUND GENERATORS
+
+    // 1. Shaker for gravel footstep
     Shakers shaker => dac;
     9 => shaker.preset; // crunch
     
+    // 2. ModalBar for marble footstep
     ModalBar bar => NRev r => dac;
     1 => bar.preset;
 
-    // square plate!
+    // 3. Square Plate for marble footstep
     28 => int NUM_MODES;
     440.0 => float BASEFREQ;
 
@@ -32,9 +35,22 @@
        100.0 / (i+1) => mode[i].gain;
     }
 
+    // 4. BlowBotl
+    BlowBotl bottle => dac;
+    Brass largeBottle => JCRev jc => dac;
+
 
     fun void sonifyShoot(OscMsg msg) {
-        <<< "SHOOT:", "shot #", msg.getString(0), ", force:", msg.getFloat(1), "]" >>>;
+        <<< "SHOOT:", "shot ", msg.getString(0), ", force:", msg.getFloat(1), "]" >>>;
+        msg.getString(0) => string shotName;
+        msg.getFloat(1) => float force;
+
+        if (isFizzBuzz(shotName)) {
+            blowBottleLarge(shotName, force);
+        }
+        else {
+            blowBottleSmall(Std.atoi(shotName), force);
+        }
     }
 
     fun void sonifyFootStep(OscMsg msg) {
@@ -74,10 +90,41 @@
     }
 
 
+    fun void blowBottleSmall(int shotNum, float force) {
+        ((shotNum % 5) + 1) * 200 => bottle.freq;
+        ((shotNum % 5) + 1) * 600 => bottle.vibratoFreq;
+        0.75 => bottle.vibratoGain;
+        0.5 => bottle.noiseGain;
+        0.5 => bottle.startBlowing;
+        0.5::second => now;
+        1.0 => bottle.stopBlowing;
+    }
+
+    fun void blowBottleLarge(string shot, float force) {
+        500 => largeBottle.freq;
+        100 => largeBottle.vibratoFreq;
+        0.75 => largeBottle.vibratoGain;
+        0.9 => largeBottle.lip;
+        0.75 => largeBottle.startBlowing;
+        1.0::second => now;
+        1.0 => largeBottle.stopBlowing;
+    }
+
+    // UTILITIES
+
     fun void setFreqs(float freq)  {
         for (int i;i<NUM_MODES;i++)   {
             freq * Math.sqrt(modes[i][0]*modes[i][0] +
                                 modes[i][1]*modes[i][1]) => mode[i].freq;
+        }
+    }
+
+    fun int isFizzBuzz(string s) {
+        if (s == "Fizz" || s == "Buzz" || s == "FizzBuzz") {
+            return 1;
+        }
+        else {
+            return 0;
         }
     }
 

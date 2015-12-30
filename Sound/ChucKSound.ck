@@ -36,8 +36,9 @@
     }
 
     // 4. BlowBotl
-    BlowBotl bottle => dac;
-    Brass largeBottle => JCRev jc => dac;
+    PulseOsc bottle => JCRev jc => dac;
+    0 => bottle.gain;
+    Brass largeBottle => jc => dac;
 
 
     fun void sonifyShoot(OscMsg msg) {
@@ -46,10 +47,10 @@
         msg.getFloat(1) => float force;
 
         if (isFizzBuzz(shotName)) {
-            blowBottleLarge(shotName, force);
+            spork ~ blowBottleLarge(shotName, force);
         }
         else {
-            blowBottleSmall(Std.atoi(shotName), force);
+            spork ~ blowBottleSmall(Std.atoi(shotName), force);
         }
     }
 
@@ -92,16 +93,21 @@
 
     fun void blowBottleSmall(int shotNum, float force) {
         ((shotNum % 5) + 1) * 200 => bottle.freq;
-        ((shotNum % 5) + 1) * 600 => bottle.vibratoFreq;
-        0.75 => bottle.vibratoGain;
-        0.5 => bottle.noiseGain;
-        0.5 => bottle.startBlowing;
-        0.5::second => now;
-        1.0 => bottle.stopBlowing;
+        // ((shotNum % 5) + 1) * 600 => bottle.vibratoFreq;
+        // 0.5 => bottle.volume;
+        // 0.75 => bottle.vibratoGain;
+        // 0.5 => bottle.noiseGain;
+        0.05 => bottle.gain;
+        0.05::second => now;
+        0.0 => bottle.gain;
     }
 
     fun void blowBottleLarge(string shot, float force) {
-        500 => largeBottle.freq;
+        // <<<force*4>>>;
+        // force * 4 => largeBottle.freq;
+
+        Math.random2f(400.0, 500.0) => largeBottle.freq;
+        <<<largeBottle.freq()>>>;
         100 => largeBottle.vibratoFreq;
         0.75 => largeBottle.vibratoGain;
         0.9 => largeBottle.lip;
@@ -143,6 +149,7 @@ oin.listenAll();
 OscMsg msg;
 
 while (true) {
+    oin => now;
     while (oin.recv(msg)) {
         // <<< "got message:", msg.address, msg.typetag>>>;
 

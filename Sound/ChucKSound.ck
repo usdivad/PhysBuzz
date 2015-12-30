@@ -45,8 +45,10 @@
 
 
     // 6. BlowBotl for eyeball
-    BlowBotl eyebottle => r => dac;
-
+    BlowBotl botl => r => dac;
+    0.0 => botl.volume;
+    400 => botl.freq;
+    // 0.5 => botl.noteOn;
 
     fun void sonifyShoot(OscMsg msg) {
         <<< "SHOOT:", "shot ", msg.getString(0), ", force:", msg.getFloat(1), "]" >>>;
@@ -94,7 +96,12 @@
     }
 
     fun void sonifyEyeball(OscMsg msg) {
-        // <<< "EYEBALL:", "distance:", msg.getFloat(0) >>>;
+        <<< "EYEBALL:", "distance:", msg.getFloat(0) >>>;
+        msg.getFloat(0) => float distance;
+        1 - (Math.exp(distance) * 0.0001) => float gain;
+        // (1 - (distance/25)) => float gain;
+        <<<gain>>>;
+        Math.max(0.1, gain) => botl.noteOn;
     }
 
 

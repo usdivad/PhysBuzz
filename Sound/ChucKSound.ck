@@ -56,7 +56,7 @@
 
     // 0.5 => botl.noteOn;
 
-    // 7. Shakers for explosion
+    // 7. Shakers for flare explosion
     Shakers es1 => jc => dac; // explosion shaker 1
     Shakers es2 => prc => dac; // explosion shaker 2
 
@@ -64,11 +64,27 @@
     128 => es1.objects;
     1.0 => es1.energy;
     0.75 => es1.decay;
+    0.0 => es1.noteOn;
 
     11 => es2.preset; // sandpaper
     128 => es2.objects;
     1.0 => es2.energy;
     0.75 => es2.decay;
+    0.0 => es2.noteOn;
+
+    // 8. for explosion explosion
+    Shakers es3 => PitShift ps => jc => dac;
+    Sitar sitar => ps => jc => dac;
+
+    22 => es3.preset;
+    128 => es3.objects;
+    1.0 => es3.energy;
+    0.75 => es3.decay;
+    0.0 => es3.noteOn;
+
+    1.0 => ps.mix;
+    0.1 => ps.shift;
+
 
     fun void sonifyShoot(OscMsg msg) {
         <<< "SHOOT:", "shot ", msg.getString(0), ", force:", msg.getFloat(1), "]" >>>;
@@ -120,16 +136,17 @@
             spork ~ explodeFlare(distance);
         }
         else {
+            // spork ~ explodeFlare(distance);
             spork ~ explodeExplosion(distance);
         }
     }
 
     fun void sonifyEyeball(OscMsg msg) {
-        <<< "EYEBALL:", "distance:", msg.getFloat(0) >>>;
+        // <<< "EYEBALL:", "distance:", msg.getFloat(0) >>>;
         msg.getFloat(0) => float distance;
         1 - (Math.exp(distance) * 0.0001) => float gain;
         // (1 - (distance/25)) => float gain;
-        <<<gain>>>;
+        // <<<gain>>>;
         Math.random2f(380.0, 420.0) => botl.freq;
         Math.max(0.1, gain) => botl.noteOn;
         Math.max(0.25, gain) => botl.noiseGain;
@@ -164,14 +181,22 @@
 
     fun void explodeFlare(float distance) {
         setVolumeFromDistance(distance) => float gain;
-        Math.max(0.1, gain) => es1.noteOn;
+        <<<gain>>>;
         Math.random2f(100.0, 500.0) => es1.freq;
+        Math.max(0.1, gain) => es1.noteOn;
 
-        Math.max(0.1, gain) => es2.noteOn;
         Math.random2f(100.0, 500.0) => es2.freq;
+        Math.max(0.1, gain) => es2.noteOn;
     }
 
     fun void explodeExplosion(float distance) {
+        setVolumeFromDistance(distance) => float gain;
+        <<<gain>>>;
+        Math.random2f(10.0, 50.0) => es3.freq;
+        Math.max(0.1, gain) * 3 => es3.noteOn;
+
+        Math.random2f(50,60) => sitar.freq;
+        Math.max(0.1, gain) => sitar.noteOn;
     }
 
     // UTILITIES

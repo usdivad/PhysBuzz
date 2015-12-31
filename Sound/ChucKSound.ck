@@ -72,11 +72,13 @@
     0.75 => es2.decay;
     0.0 => es2.noteOn;
 
-    // 8. for explosion explosion
+    // 8. Shaker, Sitar, and beat-interference SinOscs for explosion explosion
     Shakers es3 => PitShift ps => jc => dac;
     Sitar sitar => ps => jc => dac;
+    SinOsc sin1 => ADSR sinAdsr => prc => dac;
+    SinOsc sin2 => sinAdsr => prc => dac;
 
-    22 => es3.preset;
+    22 => es3.preset; // tuned bamboo
     128 => es3.objects;
     1.0 => es3.energy;
     0.75 => es3.decay;
@@ -84,6 +86,11 @@
 
     1.0 => ps.mix;
     0.1 => ps.shift;
+
+    0 => sin1.gain;
+    0 => sin2.gain;
+
+    sinAdsr.set(10::ms, 8::ms, 1.0, 500::ms);
 
 
     fun void sonifyShoot(OscMsg msg) {
@@ -146,10 +153,18 @@
         msg.getFloat(0) => float distance;
         1 - (Math.exp(distance) * 0.0001) => float gain;
         // (1 - (distance/25)) => float gain;
-        // <<<gain>>>;
+        Math.max(0.1, gain) => float vol;
+        // <<<gain, vol>>>;
         Math.random2f(380.0, 420.0) => botl.freq;
-        Math.max(0.1, gain) => botl.noteOn;
+        vol => botl.noteOn;
         Math.max(0.25, gain) => botl.noiseGain;
+
+        // botl.freq() / 4 => float sin1Freq;
+        // sin1Freq + Math.random2f(1, 3) => float sin2Freq;
+        // sin1Freq => sin1.freq;
+        // sin2Freq => sin2.freq;
+        // vol => sin1.gain;
+        // vol => sin2.gain;
     }
 
 
@@ -181,22 +196,39 @@
 
     fun void explodeFlare(float distance) {
         setVolumeFromDistance(distance) => float gain;
-        <<<gain>>>;
+        Math.max(0.1, gain) => float vol;
+        <<<gain, vol>>>;
+
         Math.random2f(100.0, 500.0) => es1.freq;
-        Math.max(0.1, gain) => es1.noteOn;
+        vol => es1.noteOn;
 
         Math.random2f(100.0, 500.0) => es2.freq;
-        Math.max(0.1, gain) => es2.noteOn;
+        vol => es2.noteOn;
     }
 
     fun void explodeExplosion(float distance) {
         setVolumeFromDistance(distance) => float gain;
-        <<<gain>>>;
+        Math.max(0.1, gain) => float vol;
+        <<<gain, vol>>>;
+
         Math.random2f(10.0, 50.0) => es3.freq;
-        Math.max(0.1, gain) * 3 => es3.noteOn;
+        vol => es3.noteOn;
 
         Math.random2f(50,60) => sitar.freq;
-        Math.max(0.1, gain) => sitar.noteOn;
+        vol * 0.75 => sitar.noteOn;
+
+        Math.random2f(90, 110) => float sin1Freq;
+        sin1Freq + Math.random2f(1, 3) => float sin2Freq;
+        sin1Freq => sin1.freq;
+        sin2Freq => sin2.freq;
+        vol * 0.3 => sin1.gain;
+        vol * 0.2 => sin2.gain;
+
+        sinAdsr.keyOn();
+        0.75::second => now;
+        sinAdsr.keyOff();
+        // 0 => sin1.gain;
+        // 0 => sin2.gain;
     }
 
     // UTILITIES

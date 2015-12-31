@@ -47,7 +47,7 @@
     Brass brass => JCRev jc => dac;
 
 
-    // 6. BlowBotl for eyeball
+    // 6. BlowBotl for eyeball movement
     BlowBotl botl => r => dac;
     0.0 => botl.volume;
     400 => botl.freq;
@@ -72,11 +72,9 @@
     0.75 => es2.decay;
     0.0 => es2.noteOn;
 
-    // 8. Shaker, Sitar, and beat-interference SinOscs for explosion explosion
+    // 8. Shaker and Sitar for explosion explosion
     Shakers es3 => PitShift ps => jc => dac;
     Sitar sitar => ps => jc => dac;
-    SinOsc sin1 => ADSR sinAdsr => prc => dac;
-    SinOsc sin2 => sinAdsr => prc => dac;
 
     22 => es3.preset; // tuned bamboo
     128 => es3.objects;
@@ -86,6 +84,10 @@
 
     1.0 => ps.mix;
     0.1 => ps.shift;
+
+    // 9. Two beat-interference SinOscs for eyeball hit
+    SinOsc sin1 => ADSR sinAdsr => prc => dac;
+    SinOsc sin2 => sinAdsr => prc => dac;
 
     0 => sin1.gain;
     0 => sin2.gain;
@@ -148,8 +150,8 @@
         }
     }
 
-    fun void sonifyEyeball(OscMsg msg) {
-        // <<< "EYEBALL:", "distance:", msg.getFloat(0) >>>;
+    fun void sonifyEyeballMovement(OscMsg msg) {
+        // <<< "EYEBALL MVMT:", "distance:", msg.getFloat(0) >>>;
         msg.getFloat(0) => float distance;
         1 - (Math.exp(distance) * 0.0001) => float gain;
         // (1 - (distance/25)) => float gain;
@@ -165,6 +167,33 @@
         // sin2Freq => sin2.freq;
         // vol => sin1.gain;
         // vol => sin2.gain;
+    }
+
+    fun void sonifyEyeballHit(OscMsg msg) {
+        <<< "EYEBALL HIT:", "isRocket:", msg.getInt(0), "curRetreatTime:", msg.getInt(1), "distance:", msg.getFloat(2) >>>;
+        msg.getInt(0) => int isRocket;
+        msg.getInt(1) => int curRetreatTime;
+        msg.getFloat(2) => float distance;
+
+        setVolumeFromDistance(distance) => float gain;
+        Math.max(0.1, gain) => float vol;
+
+        Math.random2f(90, 110) => float sin1Freq;
+        // if (isRocket == 0 && curRetreatTime == 0) {
+        //     Math.random2f(400, 440) => float sin1Freq;
+        // }
+        sin1Freq + Math.random2f(1, 3) => float sin2Freq;
+        sin1Freq => sin1.freq;
+        sin2Freq => sin2.freq;
+        vol * 0.3 => sin1.gain;
+        vol * 0.2 => sin2.gain;
+
+        sinAdsr.keyOn();
+        // Math.max(0.5, (curRetreatTime / 100))::second => now;
+        (curRetreatTime / 100)::second => now;
+        sinAdsr.keyOff();
+        // 0 => sin1.gain;
+        // 0 => sin2.gain;
     }
 
 
@@ -216,19 +245,6 @@
 
         Math.random2f(50,60) => sitar.freq;
         vol * 0.75 => sitar.noteOn;
-
-        Math.random2f(90, 110) => float sin1Freq;
-        sin1Freq + Math.random2f(1, 3) => float sin2Freq;
-        sin1Freq => sin1.freq;
-        sin2Freq => sin2.freq;
-        vol * 0.3 => sin1.gain;
-        vol * 0.2 => sin2.gain;
-
-        sinAdsr.keyOn();
-        0.75::second => now;
-        sinAdsr.keyOff();
-        // 0 => sin1.gain;
-        // 0 => sin2.gain;
     }
 
     // UTILITIES
@@ -281,8 +297,11 @@ while (true) {
         else if (msg.address == "/PhysBuzz/Explode") {
             sonifyExplode(msg);
         }
-        else if (msg.address == "/PhysBuzz/Eyeball") {
-            sonifyEyeball(msg);
+        else if (msg.address == "/PhysBuzz/Eyeball/Movement") {
+            sonifyEyeballMovement(msg);
+        }
+        else if (msg.address == "/PhysBuzz/Eyeball/Hit") {
+            sonifyEyeballHit(msg);
         }
     }
 }

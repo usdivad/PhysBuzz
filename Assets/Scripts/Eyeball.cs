@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace PhysBuzz
 {
@@ -43,13 +44,23 @@ namespace PhysBuzz
 
 			// distance
 			float distance = Vector3.Distance (playerPos, transform.position);
-			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/Eyeball", distance);
+			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/Eyeball/Movement", distance);
 
 		}
 
-		void OnCollisionEnter(Collision other) {
-			print ("ouch!");
-			curRetreatTime = maxRetreatTime;
+		void OnCollisionEnter(Collision hit) {
+			// print (hit.transform.gameObject.name);
+			int isRocket = 0; // use int because no bools in chuck
+			float distance = Vector3.Distance (player.transform.position, transform.position);
+
+			if (hit.transform.gameObject.name.Contains("fizzbuzzrocket")) {
+				print ("ouch!");
+				curRetreatTime = maxRetreatTime;
+				isRocket = 1;
+			}
+			List<object> values = new List<object> ();
+			values.AddRange(new object[] {isRocket, curRetreatTime, distance});
+			OSCHandler.Instance.SendMessageToClient("ChucK", "/PhysBuzz/Eyeball/Hit", values);
 		}
 	}
 }

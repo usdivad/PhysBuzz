@@ -62,6 +62,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			m_MouseLook.Init(transform , m_Camera.transform);
 
 			currentFootStepDelay = 0;
+			//Screen.showCursor = false;
+			Cursor.visible = false;
         }
 
 
